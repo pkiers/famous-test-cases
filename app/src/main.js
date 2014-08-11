@@ -1,6 +1,10 @@
 /* globals define */
 define(function(require, exports, module) {
     'use strict';
+
+    // shims
+    require('famous/inputs/FastClick');
+
     // import dependencies
     var Engine = require('famous/core/Engine');
     var Modifier = require('famous/core/Modifier');
@@ -19,13 +23,10 @@ define(function(require, exports, module) {
         classes: ['backfaceVisibility']
     });
 
-    var initialTime = Date.now();
-    var centerSpinModifier = new Modifier({
-        origin: [0.5, 0.5],
-        transform : function() {
-            return Transform.rotateY(.002 * (Date.now() - initialTime));
-        }
+    logo.on('click', function(event) {
+        if (event instanceof window.CustomEvent)
+            alert('clicked by fastclick!');
     });
 
-    mainContext.add(centerSpinModifier).add(logo);
+    mainContext.add(new Modifier({origin: [.5,.5]})).add(logo);
 });
