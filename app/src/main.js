@@ -3,7 +3,7 @@ define(function(require, exports, module) {
     'use strict';
 
     // ClickFix, remove to see clicks on swipe
-    require('famous/inputs/ClickFix');
+    // require('famous/inputs/ClickFix');
 
     // import dependencies
     var Engine = require('famous/core/Engine');
@@ -27,7 +27,7 @@ define(function(require, exports, module) {
     scrollview.sequenceFrom(surfaces);
 
     var sync = new GenericSync({
-        mouse : { direction : GenericSync.DIRECTION_Y },
+        mouse : { direction : GenericSync.DIRECTION_Y, clickThreshold: 5 },
         touch : {direction : GenericSync.DIRECTION_Y }
     });
     sync.pipe(scrollview);

@@ -41,6 +41,15 @@ define(function(require, exports, module) {
         if (this.options.propogate) this._eventInput.on('mouseleave', _handleLeave.bind(this));
         else this._eventInput.on('mouseleave', _handleEnd.bind(this));
 
+        if (this.options.clickThreshold) {
+            var self = this;
+            window.addEventListener('click', function(event) {
+                if (Math.sqrt(Math.pow(self._displacement[0], 2) + Math.pow(self._displacement[1], 2)) > self.options.clickThreshold){
+                    event.stopPropagation();
+                }
+            }, true);
+        }
+
         this._payload = {
             delta    : null,
             position : null,
@@ -56,9 +65,11 @@ define(function(require, exports, module) {
         this._prevTime = undefined;
         this._down = false;
         this._moved = false;
+        this._displacement = [0,0];
     }
 
     MouseSync.DEFAULT_OPTIONS = {
+        clickThreshold: false,
         direction: undefined,
         rails: false,
         scale: 1,
@@ -94,6 +105,10 @@ define(function(require, exports, module) {
             this._position = [0, 0];
             delta = [0, 0];
             velocity = [0, 0];
+        }
+
+        if (this.options.clickThreshold) {
+            this._displacement = [0,0];
         }
 
         var payload = this._payload;
@@ -151,6 +166,11 @@ define(function(require, exports, module) {
             nextVel = [scale * velX, scale * velY];
             this._position[0] += nextDelta[0];
             this._position[1] += nextDelta[1];
+        }
+
+        if (this.options.clickThreshold !== false) {
+            this._displacement[0] += diffX;
+            this._displacement[1] += diffY;
         }
 
         var payload = this._payload;
@@ -218,6 +238,7 @@ define(function(require, exports, module) {
         if (options.rails !== undefined) this.options.rails = options.rails;
         if (options.scale !== undefined) this.options.scale = options.scale;
         if (options.propogate !== undefined) this.options.propogate = options.propogate;
+        if (options.clickThreshold !== undefined) this.options.clickThreshold = options.clickThreshold;
     };
 
     module.exports = MouseSync;
